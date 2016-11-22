@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "801168312668",
+    "firebase_url": "https://ireport-16f3e.firebaseio.com",
+    "project_id": "ireport-16f3e",
+    "storage_bucket": "ireport-16f3e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:801168312668:android:f75fab26e0c7e150",
+        "android_client_info": {
+          "package_name": "edu.sjsu.ireportgrp8"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "801168312668-f6rhf00oenqvvqk9jn5s8p26hgncuhum.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNvTOjiyhTBoI5Uc9ZwUfXy57k3B7TOi8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
