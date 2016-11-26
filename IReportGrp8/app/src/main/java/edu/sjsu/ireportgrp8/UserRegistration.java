@@ -56,6 +56,11 @@ public class UserRegistration extends AppCompatActivity {
         PublicUser newPublicUser = new PublicUser("abc@xyz.com",screenName,firstName,lastName,streetName,aptNo,cityName,zipcode);
 
         //replace screen name with User UUID
-        mDatabase.child("publicusers").child(screenName).setValue(newPublicUser);
+        mDatabase.child(getString(R.string.key_public_users)).child(screenName).setValue(newPublicUser);
+
+
+        UserSettingsData newUserSettings = new UserSettingsData(true,true,false);
+        //replace screen name with User UUID
+        mDatabase.child(getString(R.string.key_public_user_settings)).child(screenName).setValue(newUserSettings);
     }
 }

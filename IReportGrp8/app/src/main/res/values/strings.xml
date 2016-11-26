@@ -12,4 +12,19 @@
     <string name="str_address_city">Enter City</string>
     <string name="str_address_zip">Enter Zip</string>
     <string name="btn_submit">Submit</string>
+
+    <!-- menu items -->
+    <string name="menu_item_settings">Settings</string>
+    <string name="title_activity_user_settings">UserSettings</string>
+
+    <!-- user setting activity -->
+    <string name="str_littering_report_conf">Littering Report Confirmation</string>
+    <string name="str_littering_report_status_conf">Littering Report Status Change Confirmation</string>
+    <string name="str_littering_report_anonymous">Anonymous Reporting</string>
+    <string name="toast_settings_updated">Settings Updated</string>
+
+
+    <!-- Firebase keys -->
+    <string name="key_public_users">publicusers</string>
+    <string name="key_public_user_settings">publicusersettings</string>
 </resources>
