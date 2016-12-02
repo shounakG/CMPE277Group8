@@ -9,14 +9,28 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="edu.sjsu.ireportgrp8.MainActivity">
+    <com.google.android.gms.common.SignInButton
+        android:layout_width="250dp"
+        android:layout_height="40dp"
+        android:id="@+id/googleBtn"></com.google.android.gms.common.SignInButton>
 
-    <TextView
+    <com.facebook.login.widget.LoginButton
+        android:layout_width="250dp"
+        android:layout_height="40dp"
+        android:id="@+id/fbLoginBtn"
+        android:layout_below="@+id/googleBtn"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="11dp" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        android:id="@+id/registerbutton"/>
+        android:layout_below="@+id/fbLoginBtn"
+        android:layout_toRightOf="@+id/googleBtn"
+        android:layout_toEndOf="@+id/googleBtn"
+        android:layout_marginTop="92dp"
+        android:id="@+id/progressBar3"
+        android:visibility="gone"/>
 </RelativeLayout>

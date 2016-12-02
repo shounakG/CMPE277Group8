@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "801168312668-r5tj7j0hivivi5jueu9qbq5vdkji2hpr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.sjsu.ireportgrp8",
+            "certificate_hash": "45D9F6AB75C689336439EA6E8581DD712DAE3863"
+          }
+        },
+        {
           "client_id": "801168312668-f6rhf00oenqvvqk9jn5s8p26hgncuhum.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "801168312668-f6rhf00oenqvvqk9jn5s8p26hgncuhum.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

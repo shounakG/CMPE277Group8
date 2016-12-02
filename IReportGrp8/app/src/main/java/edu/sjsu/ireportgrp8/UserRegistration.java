@@ -1,5 +1,7 @@
 package edu.sjsu.ireportgrp8;
 
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -7,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -17,10 +20,15 @@ public class UserRegistration extends AppCompatActivity {
     EditText tv_ScreenName,tv_FirstName,tv_LastName,tv_StreetName,tv_AptNo,tv_CityName,tv_ZipCode;
     Button registrationSubmit;
 
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_registration);
+
+        mAuth = FirebaseAuth.getInstance();
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -38,6 +46,21 @@ public class UserRegistration extends AppCompatActivity {
         tv_ScreenName = (EditText) findViewById(R.id.screen_name);
         tv_CityName = (EditText) findViewById(R.id.city_name);
         tv_ZipCode = (EditText) findViewById(R.id.zipcode);
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(mAuth.getCurrentUser() == null){
+                    Intent intent =new Intent(getApplicationContext(),MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
+                else{
+                    tv_ScreenName.setText(mAuth.getCurrentUser().getEmail());
+                }
+            }
+
+        };
 
 
 
