@@ -10,8 +10,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class UserRegistration extends AppCompatActivity {
 
@@ -56,13 +59,36 @@ public class UserRegistration extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else{
-                    tv_ScreenName.setText(mAuth.getCurrentUser().getEmail());
+                    //tv_ScreenName.setText(mAuth.getCurrentUser().getEmail());
+                    pullUserProfile();
                 }
             }
 
         };
 
 
+
+    }
+
+    public void pullUserProfile(){
+        mDatabase.child(getString(R.string.key_public_users)).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                PublicUser userProfileData = dataSnapshot.getValue(PublicUser.class);
+                tv_ScreenName.setText(userProfileData.getScreenName());
+                tv_FirstName.setText(userProfileData.getFirstName());
+                tv_LastName.setText(userProfileData.getLastName());
+                tv_StreetName.setText(userProfileData.getStreetAddress());
+                tv_AptNo.setText(userProfileData.getAptNumber());
+                tv_CityName.setText(userProfileData.getCityName());
+                tv_ZipCode.setText(userProfileData.getZipCode());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -76,14 +102,21 @@ public class UserRegistration extends AppCompatActivity {
         String zipcode = tv_ZipCode.getText().toString();
 
         //Replace hard coded email address with user's email address
-        PublicUser newPublicUser = new PublicUser("abc@xyz.com",screenName,firstName,lastName,streetName,aptNo,cityName,zipcode);
+        PublicUser newPublicUser = new PublicUser(mAuth.getCurrentUser().getEmail(),screenName,firstName,lastName,streetName,aptNo,cityName,zipcode);
 
         //replace screen name with User UUID
-        mDatabase.child(getString(R.string.key_public_users)).child(screenName).setValue(newPublicUser);
+        mDatabase.child(getString(R.string.key_public_users)).child(mAuth.getCurrentUser().getUid()).setValue(newPublicUser);
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
 
-        UserSettingsData newUserSettings = new UserSettingsData(true,true,false);
-        //replace screen name with User UUID
-        mDatabase.child(getString(R.string.key_public_user_settings)).child(screenName).setValue(newUserSettings);
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mAuth.removeAuthStateListener(mAuthListener);
     }
 }

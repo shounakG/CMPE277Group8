@@ -25,7 +25,7 @@ public class PublicUser {
         this.cityName = cityName;
         this.zipCode = zipCode;
     }
-
+    public PublicUser(){}
     public String getEmailAddress() {
         return emailAddress;
     }
