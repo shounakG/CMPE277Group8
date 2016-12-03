@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -106,6 +107,7 @@ public class UserRegistration extends AppCompatActivity {
 
         //replace screen name with User UUID
         mDatabase.child(getString(R.string.key_public_users)).child(mAuth.getCurrentUser().getUid()).setValue(newPublicUser);
+        Toast.makeText(getApplicationContext(),getString(R.string.update_profile),Toast.LENGTH_LONG).show();
     }
 
     @Override

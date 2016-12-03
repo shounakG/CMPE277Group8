@@ -2,7 +2,7 @@
     <string name="app_name">IReportGrp8</string>
 
     <!-- user registration activity -->
-    <string name="str_registration">Registration</string>
+    <string name="str_registration">Update Profile</string>
     <string name="str_screen_name">Enter Screen Name</string>
     <string name="str_first_name">Enter First Name</string>
     <string name="str_last_name"> Enter Last Name</string>
@@ -12,6 +12,7 @@
     <string name="str_address_city">Enter City</string>
     <string name="str_address_zip">Enter Zip</string>
     <string name="btn_submit">Submit</string>
+    <string name="update_profile">Profile has been successfully updated</string>
 
     <!-- menu items -->
     <string name="menu_item_settings">Settings</string>
