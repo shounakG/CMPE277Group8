@@ -62,9 +62,18 @@ public class AccountActivity extends AppCompatActivity {
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
+                            Log.d(TAG,"Error Occurred"+databaseError.getMessage());
 
                         }
                     });
+
+                    if(mAuth.getCurrentUser().getEmail().contains("@gmail.com")){
+                        Log.d(TAG,"GMAIL User... so he must be Admin");
+                        //add code for Admin User HERE.
+                    }
+                    else {
+                        Log.d(TAG,"Normal User...");
+                    }
                 }
             }
 
