@@ -22,7 +22,6 @@ import com.google.firebase.database.ValueEventListener;
 
 public class AccountActivity extends AppCompatActivity {
     private final String TAG = getClass().getName();
-    private Button mLogoutBtn;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mUserReference;
@@ -70,16 +69,6 @@ public class AccountActivity extends AppCompatActivity {
             }
 
         };
-
-        mLogoutBtn = (Button) findViewById(R.id.logoutBtn);
-        mLogoutBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LoginManager.getInstance().logOut();
-                mAuth.getInstance().signOut();
-
-            }
-        });
     }
 
     @Override
