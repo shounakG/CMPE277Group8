@@ -78,6 +78,15 @@ public class AccountActivity extends AppCompatActivity {
             }
 
         };
+
+        Button submitNewReport = (Button) findViewById(R.id.submit_new_report);
+        submitNewReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent startSubmitReport = new Intent(AccountActivity.this,ReportActivity.class);
+                startActivity(startSubmitReport);
+            }
+        });
     }
 
     @Override

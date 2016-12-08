@@ -58,7 +58,7 @@ public class UserSettings extends AppCompatActivity {
         reportConf = (SwitchCompat) findViewById(R.id.switch_rpt_conf);
         statusConf = (SwitchCompat) findViewById(R.id.switch_status_conf);
         anonymousSetting = (SwitchCompat) findViewById(R.id.switch_anonymous);
-
+        
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

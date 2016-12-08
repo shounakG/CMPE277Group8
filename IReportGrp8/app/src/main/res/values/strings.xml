@@ -34,4 +34,12 @@
 
     <!-- Facebook keys -->
     <string name="facebook_app_id">1742999886018932</string>
+
+    <string name="options_menu_choose_option">What would you like to do?</string>
+    <string name="pic_button">Take a picture of the littering</string>
+    <string name="report_button">Describe what you see</string>
+    <string name="litter_description_q">Give a short description of the litter</string>
+    <string name="litter_size">Size</string>
+    <string name="litter_severity">Severity</string>
+    <string name="submit_button">Submit</string>
 </resources>
