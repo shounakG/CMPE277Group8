@@ -2,12 +2,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.sjsu.ireportgrp8">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.mydomain.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"/>
@@ -24,6 +38,15 @@
             android:label="@string/title_activity_user_settings"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".AccountActivity"></activity>
+        <activity android:name=".ReportActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity android:name=".ReportFormActivity"
+            android:parentActivityName=".ReportActivity">
+        </activity>
+
+        <uses-feature android:name="android.hardware.camera"
+            android:required="false" />
     </application>
 
 </manifest>

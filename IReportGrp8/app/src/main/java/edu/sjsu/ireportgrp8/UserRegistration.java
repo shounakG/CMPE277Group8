@@ -1,6 +1,7 @@
 package edu.sjsu.ireportgrp8;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +17,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
+
+import javax.ws.rs.core.MediaType;
 
 public class UserRegistration extends AppCompatActivity {
 
@@ -107,7 +115,11 @@ public class UserRegistration extends AppCompatActivity {
 
         //replace screen name with User UUID
         mDatabase.child(getString(R.string.key_public_users)).child(mAuth.getCurrentUser().getUid()).setValue(newPublicUser);
+
+        new SendEmailAsyncTask().execute();
         Toast.makeText(getApplicationContext(),getString(R.string.update_profile),Toast.LENGTH_LONG).show();
+
+
     }
 
     @Override
@@ -120,5 +132,27 @@ public class UserRegistration extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         mAuth.removeAuthStateListener(mAuthListener);
+    }
+
+    public class SendEmailAsyncTask extends AsyncTask<Void,Void,Void>
+    {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Client client = Client.create();
+            client.addFilter(new HTTPBasicAuthFilter("api",
+                    "key-48171d3fd8035e9e3a21881aaade014a"));
+            WebResource webResource =
+                    client.resource("https://api.mailgun.net/v3/mail.pruthvi-nadunooru.name" +
+                            "/messages");
+            MultivaluedMapImpl formData = new MultivaluedMapImpl();
+            formData.add("from", "CMPE 277 Grp 8 <akshay@mail.pruthvi-nadunooru.name>");
+            formData.add("to", "akshay.mathur@sjsu.edu");
+            formData.add("subject", "Test from Android");
+            formData.add("text", "Your Profile has been updated");
+            webResource.type(MediaType.APPLICATION_FORM_URLENCODED).
+                    post(ClientResponse.class, formData);
+
+            return null;
+        }
     }
 }
