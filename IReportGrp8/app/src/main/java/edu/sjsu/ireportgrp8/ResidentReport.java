@@ -22,7 +22,7 @@ public class ResidentReport implements Serializable {
     private String severity_level;
     private String size;
     private String status;
-//    private String uri;
+    private String uri;
 
     private String reportId;
     private String userId;
@@ -163,13 +163,13 @@ public class ResidentReport implements Serializable {
         this.address = address;
     }
 
-//    public String getUri() {
-//        return uri;
-//    }
+    public String getUri() {
+        return uri;
+    }
 
-//    public void setUri(Uri uri) {
-//        this.uri = uri.toString();
-//    }
+    public void setUri(Uri uri) {
+        this.uri = uri.toString();
+    }
 
     public String getUserId() {
         return userId;

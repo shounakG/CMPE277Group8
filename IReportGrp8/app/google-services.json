@@ -15,15 +15,23 @@
       },
       "oauth_client": [
         {
-          "client_id": "801168312668-64jga3ehkkfluaj9frvpmljbqf5d4kgt.apps.googleusercontent.com",
+          "client_id": "801168312668-m6863qeshv4s62568epaoo9ifti1j54m.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "edu.sjsu.ireportgrp8",
-            "certificate_hash": "94EC56416A6917D354B5D18CC582DD32809DD36B"
+            "certificate_hash": "65F60A2227DABDBAFADF15C3745C964444BB831D"
           }
         },
         {
-          "client_id": "801168312668-r5tj7j0hivivi5jueu9qbq5vdkji2hpr.apps.googleusercontent.com",
+          "client_id": "801168312668-o8huht4d91808jeg12h1vv2sbq6r255m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.sjsu.ireportgrp8",
+            "certificate_hash": "1F464918F3F83691580A5373BDB056FCED4C9822"
+          }
+        },
+        {
+          "client_id": "801168312668-8pmkrs76m28frkcbu8an7si21bj7g9dj.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "edu.sjsu.ireportgrp8",

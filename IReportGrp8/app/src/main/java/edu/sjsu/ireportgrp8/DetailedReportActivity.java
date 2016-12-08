@@ -62,7 +62,7 @@ public class DetailedReportActivity extends AppCompatActivity implements Adapter
         statusSpinner.setOnItemSelectedListener(this);
 
         Glide.with(this)
-                .load(residentReport.getImage().get(0))
+                .load(residentReport.getUri())
                 .into(complaintPictureImgView);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();

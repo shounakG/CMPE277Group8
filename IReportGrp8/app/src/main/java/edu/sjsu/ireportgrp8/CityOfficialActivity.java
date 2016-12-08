@@ -3,8 +3,10 @@ package edu.sjsu.ireportgrp8;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
@@ -35,6 +37,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseAppIndex;
 import com.google.firebase.appindexing.FirebaseUserActions;
@@ -650,9 +654,24 @@ public class CityOfficialActivity extends AppCompatActivity {
                     }
                 }
 
-                Glide.with(CityOfficialActivity.this)
-                        .load(residentReportFinal.getImage().get(0))
-                        .into(viewHolderFinal.stripeThumbnailImgView);
+                StorageReference imageRef = storageRef.child("reports").child(residentReportFinal.getImage().get(0));
+
+                imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        // download uri
+                        residentReportFinal.setUri(uri);
+
+                        Glide.with(CityOfficialActivity.this)
+                                .load(uri)
+                                .into(viewHolderFinal.stripeThumbnailImgView);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle any errors
+                    }
+                });
 
                 // write this message to the on-device index
                 FirebaseAppIndex.getInstance().update(getReportIndexable(residentReportFinal));
