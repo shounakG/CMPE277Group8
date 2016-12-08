@@ -33,6 +33,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.appindexing.Action;
 import com.google.firebase.appindexing.FirebaseAppIndex;
@@ -84,6 +85,7 @@ public class CityOfficialActivity extends AppCompatActivity {
     private DatabaseReference mFirebaseDatabaseReference;
     private static volatile RecyclerView mlistRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
+    private FirebaseAuth mAuth;
 
     public static volatile FirebaseStorage storage = FirebaseStorage.getInstance();
     public static volatile StorageReference storageRef = storage.getReferenceFromUrl("gs://ireport-16f3e.appspot.com");
@@ -309,6 +311,7 @@ public class CityOfficialActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city_official);
+        mAuth = FirebaseAuth.getInstance();
 
         me = this;
 
@@ -485,6 +488,11 @@ public class CityOfficialActivity extends AppCompatActivity {
                 startActivity(intent);
             }
             return true;
+            case R.id.logout_menu:
+                LoginManager.getInstance().logOut();
+                mAuth.getInstance().signOut();
+                finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
