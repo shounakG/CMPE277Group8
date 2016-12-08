@@ -73,8 +73,6 @@ public class MainActivity extends AppCompatActivity {
                     } else if (o.getProviderId().equalsIgnoreCase("google.com")) {
                         Intent intent = new Intent(MainActivity.this, CityOfficialActivity.class);
                         startActivity(intent);
-
-                        finish();
                     }
                 }
             }
