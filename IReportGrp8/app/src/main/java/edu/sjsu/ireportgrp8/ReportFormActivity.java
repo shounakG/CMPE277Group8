@@ -70,7 +70,7 @@ public class ReportFormActivity extends AppCompatActivity {
     private DatabaseReference mUserReference;
 
     private String screenName;
-    private Boolean anonymous;
+    private Boolean anonymous,reportconf;
 
     LocationManager mLocationManager;
 
@@ -164,6 +164,7 @@ public class ReportFormActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 UserSettingsData userSettingsData = dataSnapshot.getValue(UserSettingsData.class);
                 anonymous = userSettingsData.getAnonymous();
+                reportconf = userSettingsData.getReportConf();
             }
 
             @Override
@@ -260,7 +261,10 @@ public class ReportFormActivity extends AppCompatActivity {
 
                 System.out.println("something");
                 Toast.makeText(ra,"Information saved...", Toast.LENGTH_SHORT).show();
-                new SendEmailAsyncTask().execute(mAuth.getCurrentUser().getEmail(),edt_title.getText().toString());
+                if(reportconf){
+                    new SendEmailAsyncTask().execute(mAuth.getCurrentUser().getEmail(),edt_title.getText().toString());
+                }
+
                 return;
             }
         });
