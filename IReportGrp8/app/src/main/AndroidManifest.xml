@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.sjsu.ireportgrp8">
 
+    <uses-sdk
+        android:minSdkVersion="16"
+        android:targetSdkVersion="24" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -22,9 +26,11 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"/>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,21 +38,79 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".UserRegistration" />
+
         <activity
             android:name=".UserSettings"
             android:label="@string/title_activity_user_settings"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
         <activity android:name=".AccountActivity"></activity>
+
         <activity android:name=".ReportActivity"
             android:parentActivityName=".MainActivity">
         </activity>
+
         <activity android:name=".ReportFormActivity"
             android:parentActivityName=".ReportActivity">
         </activity>
 
         <uses-feature android:name="android.hardware.camera"
             android:required="false" />
-    </application>
 
+        <activity
+            android:name=".SearchResultsActivity"
+            android:label="@string/app_name">
+
+            <!-- to identify this activity as "searchable" -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+
+        <activity
+            android:name=".DetailedReportActivity"
+            android:theme="@style/AppTheme">
+        </activity>
+
+        <activity
+            android:name=".MapActivity"
+            android:label="@string/title_activity_maps">
+        </activity>
+	
+	    <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".CityOfficialActivity"
+            android:label=""
+            android:theme="@style/AppTheme">
+	    
+	    
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".SearchResultsActivity" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="iReport.firebase.google.com"
+                    android:pathPrefix="/message"
+                    android:scheme="http" />
+            </intent-filter>
+        </activity>
+
+    </application>
 </manifest>

@@ -1,0 +1,147 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".ReportStripe"
+    android:paddingBottom="@dimen/stripe_padding"
+    android:background="@color/common_google_signin_btn_text_dark_disabled"
+    android:id="@+id/report_parent">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/reportStripeView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:clickable="true"
+        android:layout_height="175dp">
+
+        <View
+            android:id="@+id/myRectangleView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/rectangle"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <ImageView
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"
+            android:id="@+id/stripeThumbnailImgView"
+            android:adjustViewBounds="true"
+            android:layout_height="125dp"
+            android:layout_width="125dp" />
+
+        <TextView
+            android:text="1. Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="48dp"
+            android:layout_marginStart="48dp"
+            android:id="@+id/reportTitleView"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/stripeThumbnailImgView"
+            android:layout_toEndOf="@+id/stripeThumbnailImgView" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/btn_star_big_off"
+            android:id="@+id/urgentOffImgView"
+            android:layout_alignTop="@+id/mediumOffImgView"
+            android:layout_toRightOf="@+id/mediumOffImgView"
+            android:layout_toEndOf="@+id/mediumOffImgView" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/btn_star_big_off"
+            android:id="@+id/minorOffImgView"
+            android:layout_below="@+id/reportTitleView"
+            android:layout_alignLeft="@+id/reportTitleView"
+            android:layout_alignStart="@+id/reportTitleView"
+            android:layout_marginBottom="14dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/btn_star_big_off"
+            android:id="@+id/mediumOffImgView"
+            android:layout_alignTop="@+id/minorOffImgView"
+            android:layout_toRightOf="@+id/minorOffImgView"
+            android:layout_toEndOf="@+id/minorOffImgView" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/star_big_on"
+            android:id="@+id/minorOnImgView"
+            android:layout_alignTop="@+id/minorOffImgView"
+            android:layout_alignLeft="@+id/minorOffImgView"
+            android:layout_alignStart="@+id/minorOffImgView"
+            android:visibility="visible" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/star_big_on"
+            android:id="@+id/mediumOnImgView"
+            android:layout_alignTop="@+id/urgentOffImgView"
+            android:layout_toRightOf="@+id/minorOffImgView"
+            android:layout_toEndOf="@+id/minorOffImgView"
+            android:visibility="visible" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/star_big_on"
+            android:id="@+id/urgentOnImgView"
+            android:layout_alignTop="@+id/urgentOffImgView"
+            android:layout_toRightOf="@+id/mediumOffImgView"
+            android:layout_toEndOf="@+id/mediumOffImgView"
+            android:visibility="visible" />
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/minorOffImgView"
+            android:layout_alignLeft="@+id/minorOffImgView"
+            android:layout_alignStart="@+id/minorOffImgView"
+            android:id="@+id/addressTextView" />
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/datePostedTextView"
+            android:layout_below="@+id/addressTextView"
+            android:layout_alignLeft="@+id/addressTextView"
+            android:layout_alignStart="@+id/addressTextView" />
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/currentStatusTextView"
+            android:layout_below="@+id/datePostedTextView"
+            android:layout_alignLeft="@+id/datePostedTextView"
+            android:layout_alignStart="@+id/datePostedTextView" />
+
+        <TextView
+            android:text="email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/emailTextView"
+            android:layout_below="@id/currentStatusTextView"
+            android:layout_alignLeft="@+id/datePostedTextView"
+            android:layout_alignStart="@+id/datePostedTextView" />
+    </RelativeLayout>
+
+</RelativeLayout>

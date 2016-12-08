@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_custom_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="2dp"
+    android:background="@android:drawable/screen_background_light_transparent"
+    android:alpha="128"
+    android:gravity="center">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/popupRL"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:foregroundGravity="center">
+
+        <View
+            android:id="@+id/filterPopupRectangle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignBottom="@+id/filterCancelButton" />
+
+        <ImageButton
+            android:id="@+id/ib_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/mr_ic_close_light"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:background="@null"
+            />
+
+        <TextView
+            android:text="Filters"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/filterTextView"
+            android:textSize="@dimen/cast_libraries_material_featurehighlight_center_horizontal_offset"
+            android:textColor="@color/cast_expanded_controller_background_color"
+            android:fontFamily="sans-serif"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="11dp" />
+
+        <TextView
+            android:text="Sort by"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sortByTextView"
+            android:layout_below="@+id/filterTextView"
+            android:layout_marginTop="20dp"
+            android:textStyle="normal|bold"
+            android:fontFamily="serif"
+            android:textColor="@color/cast_expanded_controller_background_color" />
+
+        <View
+            android:id="@+id/headerSep1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_below="@id/sortByTextView"
+            android:layout_marginTop="5dp" />
+
+        <TextView
+            android:text="Email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/emailTitle"
+            android:layout_below="@+id/headerSep1"
+            android:layout_alignLeft="@+id/filterTextView"
+            android:layout_alignStart="@+id/filterTextView"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/cast_expanded_controller_background_color"
+            android:paddingLeft="5dp" />
+
+        <View
+            android:id="@+id/sep1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_below="@id/emailTitle"
+            android:layout_marginTop="20dp"
+            android:layout_alignLeft="@+id/emailTitle"
+            android:layout_alignStart="@+id/emailTitle"
+            android:layout_toLeftOf="@+id/ib_close"
+            android:layout_toStartOf="@+id/ib_close" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/reportFilterSpinner"
+            android:layout_below="@+id/sep1"
+            android:layout_marginTop="20dp"
+            android:spinnerMode="dialog"
+            android:entries="@array/report_status_array"
+            android:layout_alignLeft="@+id/emailTitle"
+            android:layout_alignStart="@+id/emailTitle"
+            android:paddingBottom="5dp"
+            android:paddingTop="0dp"
+            android:theme="@android:style/Theme.Holo.Light" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/emailCheckBox"
+            android:layout_alignBaseline="@+id/emailTitle"
+            android:layout_alignBottom="@+id/emailTitle"
+            android:layout_toRightOf="@+id/emailTitle"
+            android:layout_toEndOf="@+id/emailTitle"
+            android:theme="@android:style/Theme.Holo.Light" />
+
+        <View
+            android:id="@+id/sep2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_below="@id/reportFilterSpinner"
+            android:layout_marginTop="25dp"
+            android:layout_alignLeft="@+id/emailTitle"
+            android:layout_alignStart="@+id/emailTitle"
+            android:layout_toLeftOf="@+id/ib_close"
+            android:layout_toStartOf="@+id/ib_close" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/sep2"
+            android:layout_alignLeft="@+id/sep2"
+            android:layout_alignStart="@+id/sep2"
+            android:layout_marginTop="20dp"
+            android:id="@+id/severitySpinner"
+            android:spinnerMode="dialog"
+            android:entries="@array/severity_array"
+            android:paddingBottom="5dp"
+            android:theme="@android:style/Theme.Holo.Light" />
+
+        <View
+            android:id="@+id/sep3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_below="@id/severitySpinner"
+            android:layout_marginTop="25dp"
+            android:layout_alignLeft="@+id/emailTitle"
+            android:layout_alignStart="@+id/emailTitle"
+            android:layout_toLeftOf="@+id/ib_close"
+            android:layout_toStartOf="@+id/ib_close" />
+
+        <Button
+            android:text="@string/cancel_underlined"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/sep3"
+            android:layout_toRightOf="@+id/emailCheckBox"
+            android:layout_marginLeft="70dp"
+            android:layout_marginTop="45dp"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/filterCancelButton"
+            android:background="@android:drawable/screen_background_light_transparent"
+            android:textColor="#0000EE"
+            android:textColorLink="?android:attr/colorMultiSelectHighlight" />
+
+        <Button
+            android:text="@string/apply_underlined"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/filterCancelButton"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="13dp"
+            android:layout_marginEnd="13dp"
+            android:id="@+id/filterApplyButton"
+            android:background="@android:drawable/screen_background_light_transparent"
+            android:textColor="#0000EE"
+            android:textColorLink="?android:attr/colorMultiSelectHighlight" />
+    </RelativeLayout>
+
+</RelativeLayout>

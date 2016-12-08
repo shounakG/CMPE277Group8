@@ -1,15 +1,11 @@
 package edu.sjsu.ireportgrp8;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -18,7 +14,6 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -35,14 +30,17 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserInfo;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private SignInButton mGoogleBtn;
     private static final int RC_SIGN_IN = 1;
+    private static final String TAG = "MAIN_ACTIVITY";
     private static GoogleApiClient mGoogleApiClient;
+    private SignInButton mGoogleBtn;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private static final String TAG = "MAIN_ACTIVITY";
     private LoginButton loginButton;
     private CallbackManager mCallbackManager;
     private ProgressBar progressBar;
@@ -61,17 +59,25 @@ public class MainActivity extends AppCompatActivity {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(firebaseAuth.getCurrentUser()!= null){
-                    if(googleClicked == true){
+            if (firebaseAuth.getCurrentUser() != null) {
+                firebaseAuth.getCurrentUser().getProviderId();
+                List<UserInfo> obj = (List<UserInfo>) firebaseAuth.getCurrentUser().getProviderData();
+                for (UserInfo o : obj) {
+                    Log.d(TAG, o.getProviderId());
+                    if (o.getProviderId().equalsIgnoreCase("facebook.com")) {
+                        Log.d(TAG, "Start user Activity");
+                        Intent intent = new Intent(MainActivity.this, AccountActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
 
-                    }else{
+                    } else if (o.getProviderId().equalsIgnoreCase("google.com")) {
+                        Intent intent = new Intent(MainActivity.this, CityOfficialActivity.class);
+                        startActivity(intent);
 
+                        finish();
                     }
-                    Intent intent =new Intent(MainActivity.this,AccountActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
                 }
-
+            }
             }
         };
         mGoogleBtn = (SignInButton) findViewById(R.id.googleBtn);
@@ -88,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 })
-                .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
         mGoogleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        loginButton = (LoginButton)findViewById(R.id.fbLoginBtn);
+        loginButton = (LoginButton) findViewById(R.id.fbLoginBtn);
         mCallbackManager = CallbackManager.Factory.create();
         loginButton.setReadPermissions("email", "public_profile");
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
@@ -122,9 +128,6 @@ public class MainActivity extends AppCompatActivity {
                 // ...
             }
         });
-
-
-
     }
 
     @Override
@@ -147,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(googleClicked == true){
+        if (googleClicked == true) {
             // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
             if (requestCode == RC_SIGN_IN) {
                 GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
@@ -155,12 +158,27 @@ public class MainActivity extends AppCompatActivity {
                     // Google Sign In was successful, authenticate with Firebase
                     GoogleSignInAccount account = result.getSignInAccount();
                     firebaseAuthWithGoogle(account);
+
+//                    view.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    Intent intent = new Intent(MainActivity.this, CityOfficialActivity.class);
+//                                    startActivity(intent);
+//
+//                                    finish();
+//                                }
+//                            });
+//                        }
+//                    }, 100);
                 } else {
                     // Google Sign In failed, update UI appropriately
                     // ...
                 }
             }
-        }else {
+        } else {
             mCallbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -215,8 +233,4 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-
-
-
-
 }

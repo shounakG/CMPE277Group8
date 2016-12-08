@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.0"
     defaultConfig {
         applicationId "edu.sjsu.ireportgrp8"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
@@ -26,17 +26,43 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:design:24.2.0'
     testCompile 'junit:junit:4.12'
-    compile 'com.google.firebase:firebase-database:9.8.0'
-    compile 'com.google.firebase:firebase-storage:9.8.0'
-    compile 'com.google.firebase:firebase-auth:9.8.0'
-    compile 'com.google.android.gms:play-services:9.8.0'
+
+    compile 'com.android.support:design:24.2.1'
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:cardview-v7:24.2.1'
+
+
+    compile 'com.github.bumptech.glide:glide:3.6.1'
+    compile 'de.hdodenhof:circleimageview:1.3.0'
+
+    // Google
+    compile 'com.google.android.gms:play-services-auth:10.0.0'
+
+    // Firebase
+    compile 'com.google.firebase:firebase-database:10.0.0'
+    compile 'com.google.firebase:firebase-storage:10.0.0'
+    compile 'com.google.firebase:firebase-auth:10.0.0'
+    compile 'com.google.firebase:firebase-config:10.0.0'
+    compile 'com.google.android.gms:play-services-appinvite:10.0.0'
+    compile 'com.google.firebase:firebase-messaging:10.0.0'
+    compile 'com.google.android.gms:play-services-ads:10.0.0'
+    compile 'com.google.firebase:firebase-crash:10.0.0'
+    compile 'com.google.firebase:firebase-appindexing:10.0.0'
+
+    compile 'com.google.android.gms:play-services:10.0.0'
+    
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile group: 'com.sun.jersey', name: 'jersey-client', version: '1.18.1'
+
+    // Firebase UI
+    compile 'com.firebaseui:firebase-ui-database:0.4.0'
+
+    // Testing dependencies
+    androidTestCompile 'junit:junit:4.12'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
+    androidTestCompile 'com.android.support.test:runner:0.5'
+    androidTestCompile 'com.android.support:support-annotations:25.0.0'
 }
+
 apply plugin: 'com.google.gms.google-services'
