@@ -1,12 +1,13 @@
 package edu.sjsu.ireportgrp8;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by dmodh on 11/29/16.
  */
 
-public class Report {
+public class Report implements Serializable{
     private String title;
     private String reportId;
     private String latitude;

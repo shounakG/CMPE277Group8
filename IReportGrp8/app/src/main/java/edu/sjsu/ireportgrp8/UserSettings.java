@@ -58,6 +58,15 @@ public class UserSettings extends AppCompatActivity {
         reportConf = (SwitchCompat) findViewById(R.id.switch_rpt_conf);
         statusConf = (SwitchCompat) findViewById(R.id.switch_status_conf);
         anonymousSetting = (SwitchCompat) findViewById(R.id.switch_anonymous);
+        anonymousSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(anonymousSetting.isChecked()){
+                    statusConf.setChecked(false);
+                    reportConf.setChecked(false);
+                }
+            }
+        });
         
 
 

@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -205,7 +206,7 @@ public class ReportFormActivity extends AppCompatActivity {
                 String s = dateFormatter.format(today);
                 r.setDatetime(s);
                 r.setDescription(mdescriptionEditText.getText().toString());
-                r.setStatus("STILL_THERE");
+                r.setStatus("Still There");
                 r.setEmail(mAuth.getCurrentUser().getEmail());
                 r.setAnnonymous(anonymous);
                 r.setScreenname(screenName);
@@ -264,7 +265,7 @@ public class ReportFormActivity extends AppCompatActivity {
                 if(reportconf){
                     new SendEmailAsyncTask().execute(mAuth.getCurrentUser().getEmail(),edt_title.getText().toString());
                 }
-
+                NavUtils.navigateUpFromSameTask(ReportFormActivity.this);
                 return;
             }
         });

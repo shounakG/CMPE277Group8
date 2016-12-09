@@ -82,6 +82,18 @@ public class DetailedReportActivity extends AppCompatActivity implements Adapter
             @Override
             public void onClick(View v) {
                 mDatabase.child("userreports").child(residentReport.getUserId()).child(residentReport.getReportId()).child("status").setValue(statusSpinner.getSelectedItem());
+                String subject = "Status of your report - " + residentReport.getTitle() + " updated.";
+                String message = "Hi " + residentReport.getUser_Screen_Name() + ",\n\n";
+                if (((String)statusSpinner.getSelectedItem()).contains("Claimed")) {
+                    message += "Official claims the issue is resolved. Can you please confirm through your application. If the issue is not resolved " +
+                            "change the status accordingly.";
+                } else {
+                    message += "Official changed the status to STILL THERE.";
+                }
+
+                message += "\n\nThank you!\nCMPE 277 Cleaning Department";
+
+                new SendEmailAsyncTask().execute(residentReport.getUser_Email(), subject, message);
                 Toast.makeText(DetailedReportActivity.this, "Status Updated!", Toast.LENGTH_SHORT).show();
             }
         });

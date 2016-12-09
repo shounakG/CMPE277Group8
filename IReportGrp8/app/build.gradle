@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.0"
     defaultConfig {
         applicationId "edu.sjsu.ireportgrp8"
-        minSdkVersion 16
+        minSdkVersion 23
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
@@ -49,6 +49,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-ads:10.0.0'
     compile 'com.google.firebase:firebase-crash:10.0.0'
     compile 'com.google.firebase:firebase-appindexing:10.0.0'
+    compile 'org.apache.commons:commons-collections4:4.1'
+    compile 'com.squareup.picasso:picasso:2.5.0'
 
     compile 'com.google.android.gms:play-services:10.0.0'
     

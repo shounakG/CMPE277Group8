@@ -83,4 +83,11 @@
     <string name="title_activity_maps">Map</string>
     <string name="apply_underlined"> <u>Apply</u> </string>
     <string name="cancel_underlined"> <u>Cancel</u> </string>
+
+    <string name="status_prompt">Choose a status</string>
+
+    <string-array name="status_array">
+        <item>Still There</item>
+        <item>Removal Confirmed</item>
+    </string-array>
 </resources>

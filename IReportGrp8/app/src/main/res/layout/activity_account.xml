@@ -11,13 +11,20 @@
     tools:context="edu.sjsu.ireportgrp8.AccountActivity"
     android:orientation="vertical">
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="150dp"
             android:text="Submit Report"
             android:id="@+id/submit_new_report"/>
+
+        <Button
+            android:layout_width="300dp"
+            android:layout_height="150dp"
+            android:text="View Report"
+            android:id="@+id/view_my_report"/>
     </LinearLayout>
 </LinearLayout>

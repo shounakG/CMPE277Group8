@@ -333,8 +333,8 @@ public class CityOfficialActivity extends AppCompatActivity {
 
         repopulateReports();
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+//        ActionBar actionBar = getSupportActionBar();
+//        actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
