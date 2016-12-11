@@ -30,4 +30,8 @@
         android:id="@+id/logout_menu"
         android:icon="@drawable/logout_icon"
         app:showAsAction="always" />
+    <item android:id="@+id/heatMap_menu"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="Heat Map"
+        />
 </menu>

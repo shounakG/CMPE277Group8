@@ -33,10 +33,16 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.appindexing.Action;
@@ -90,6 +96,8 @@ public class CityOfficialActivity extends AppCompatActivity {
     private static volatile RecyclerView mlistRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
     private FirebaseAuth mAuth;
+    private GoogleApiClient mGoogleApiClient;
+
 
     public static volatile FirebaseStorage storage = FirebaseStorage.getInstance();
     public static volatile StorageReference storageRef = storage.getReferenceFromUrl("gs://ireport-16f3e.appspot.com");
@@ -317,6 +325,19 @@ public class CityOfficialActivity extends AppCompatActivity {
         setContentView(R.layout.activity_city_official);
         mAuth = FirebaseAuth.getInstance();
 
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
+                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                        Toast.makeText(CityOfficialActivity.this, "Connection failed",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
         me = this;
 
         residentReports = new ArrayList<ResidentReport>();
@@ -495,8 +516,33 @@ public class CityOfficialActivity extends AppCompatActivity {
             case R.id.logout_menu:
                 LoginManager.getInstance().logOut();
                 mAuth.getInstance().signOut();
-                finish();
+                // Google sign out
+                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                        new ResultCallback<Status>() {
+                            @Override
+                            public void onResult(@NonNull Status status) {
+                                if(status.isSuccess()) {
+                                    Intent intent = new Intent(CityOfficialActivity.this, MainActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
+                                }else{
+                                    Toast.makeText(CityOfficialActivity.this, "Something went wrong.Please try again",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                 return true;
+            case R.id.heatMap_menu:
+            {
+                Intent intent = new Intent(this, HeatMapActivity.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("residentReports", residentReports);
+
+                intent.putExtras(bundle);
+
+                startActivity(intent);
+            }
             default:
                 return super.onOptionsItemSelected(item);
         }
