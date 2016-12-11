@@ -1,10 +1,9 @@
 package edu.sjsu.ireportgrp8;
 
-import android.*;
 import android.Manifest;
-import android.content.Intent;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -14,14 +13,11 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,9 +44,11 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.InterruptedIOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by dmodh on 12/4/16.
@@ -104,8 +102,14 @@ public class ReportDetailActivity extends AppCompatActivity implements GoogleApi
         spinnerStatus = (Spinner) findViewById(R.id.spinnerStatus);
         buildGoogleApiClient();
         createLocationRequest();
+        calculateDistance();
         fetchReportDetails(reportid);
     }
+
+    private void calculateDistance() {
+
+    }
+
 
     private void fetchReportDetails(String reportid) {
         final DatabaseReference ref = databaseReference.child("userreports").child(user.getUid()).child(reportid);
@@ -121,17 +125,9 @@ public class ReportDetailActivity extends AppCompatActivity implements GoogleApi
                         String datetime = dataSnapshot.child("datetime").getValue().toString();
                         String size_severity = dataSnapshot.child("size").getValue() + " & " + dataSnapshot.child("severity").getValue();
                         final String status = dataSnapshot.child("status").getValue().toString();
-                        System.out.println("lat = " + currentLat);
                         btn_chnage_status.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                DistanceAsyncTask distanceAsyncTask = new DistanceAsyncTask();
-                                distanceAsyncTask.execute("https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + currentLat +
-                                        "," + currentLong +
-                                        "&destinations=" + dataSnapshot.child("latitude").getValue() +
-                                        "," + dataSnapshot.child("longitude").getValue() +
-                                        "&mode=walking&units=imperial&key=AIzaSyDm7GmsBE4SIJojzIizbZ7sSEn_yqA0LyU");
-                                System.out.println("Distance = " + distance);
                                 databaseReference = FirebaseDatabase.getInstance().getReference();
                                 final DatabaseReference ref = databaseReference.child("userreports").child(user.getUid()).child(reportid);
                                 String selectedItem = spinnerStatus.getSelectedItem().toString();
@@ -194,7 +190,29 @@ public class ReportDetailActivity extends AppCompatActivity implements GoogleApi
     public void onLocationChanged(Location location) {
         currentLat = location.getLatitude()+"";
         currentLong = location.getLongitude()+"";
-        System.out.println("Lat = " + currentLat + " Long = " + currentLong);
+        final DatabaseReference ref = databaseReference.child("userreports").child(user.getUid()).child(reportid);
+        ref.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(final DataSnapshot dataSnapshot) {
+                        try {
+                            DistanceAsyncTask distanceAsyncTask = new DistanceAsyncTask();
+                            distanceAsyncTask.execute("https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + currentLat +
+                                    "," + currentLong +
+                                    "&destinations=" + dataSnapshot.child("latitude").getValue() +
+                                    "," + dataSnapshot.child("longitude").getValue() +
+                                    "&mode=walking&units=imperial&key=AIzaSyDm7GmsBE4SIJojzIizbZ7sSEn_yqA0LyU").get();
+                        } catch (InterruptedException ie) {
+                            ie.printStackTrace();
+                        } catch (ExecutionException ee) {
+                            ee.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -233,8 +251,8 @@ public class ReportDetailActivity extends AppCompatActivity implements GoogleApi
 
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
+//        mLocationRequest.setInterval(10000);
+//        mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
@@ -278,12 +296,20 @@ public class ReportDetailActivity extends AppCompatActivity implements GoogleApi
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
 
-    public class DistanceAsyncTask extends AsyncTask<String,Void,String> {
+    public class DistanceAsyncTask extends AsyncTask<String,Void,String> implements DialogInterface.OnCancelListener {
+        private Dialog dialog = null;
+        @Override
+        protected void onPreExecute() {
+            dialog = new Dialog(ReportDetailActivity.this, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+            dialog.setCancelable(false);
+            dialog.show();
+        }
+
         @Override
         protected String doInBackground(String... strings) {
             try{
                 URL newURL = new URL(strings[0]);
-                System.out.println("URL = " + newURL);
+                System.out.println("URL = " +newURL);
                 HttpURLConnection connection = (HttpURLConnection)newURL.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setDoOutput(true);
@@ -293,8 +319,10 @@ public class ReportDetailActivity extends AppCompatActivity implements GoogleApi
                 while((tmp=reader.readLine())!=null)
                     json.append(tmp).append("\n");
                 reader.close();
+                dialog.dismiss();
                 return json.toString();
             } catch (Exception e){
+                e.printStackTrace();
             }
             return null;
         }
@@ -308,26 +336,32 @@ public class ReportDetailActivity extends AppCompatActivity implements GoogleApi
                     JSONObject jsonObj = (JSONObject) distanceObject.getJSONArray("rows").get(0);
                     JSONObject jsonElements = (JSONObject) jsonObj.getJSONArray("elements").get(0);
                     distance = jsonElements.getJSONObject("distance").getString("text");
-//                    String[] splitArray = distance.split("\\s+");
-//                    if(splitArray[1].equals("mi")){
-//                        double distanceMiles = Double.parseDouble(splitArray[0]);
-//                        if(distanceMiles > 0.00568182) {
-//                            Toast.makeText(ReportDetailActivity.this, "Out of range...", Toast.LENGTH_SHORT).show();
-//                        }
-//                    } else if(splitArray[1].equals("ft")) {
-//                        double distanceFeet = Double.parseDouble(splitArray[0]);
-//                        if(distanceFeet > 30) {
-//                            Toast.makeText(ReportDetailActivity.this, "Out of range...", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
+                    String[] splitArray = distance.split("\\s+");
+                    if(splitArray[1].equals("mi")){
+                        double distanceMiles = Double.parseDouble(splitArray[0]);
+                        if(distanceMiles > 0.00568182) {
+                            btn_chnage_status.setVisibility(View.GONE);
+                            Toast.makeText(ReportDetailActivity.this, "Out of range...", Toast.LENGTH_SHORT).show();
+                        }
+                    } else if(splitArray[1].equals("ft")) {
+                        double distanceFeet = Double.parseDouble(splitArray[0]);
+                        if(distanceFeet > 30) {
+                            btn_chnage_status.setVisibility(View.GONE);
+                            Toast.makeText(ReportDetailActivity.this, "Out of range...", Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 }
                 else {
                     Toast.makeText(getApplicationContext(),"Unable to contact Google Api", Toast.LENGTH_LONG).show();
                 }
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+
+        @Override
+        public void onCancel(DialogInterface dialog) {
+            cancel(true);
         }
     }
 }
