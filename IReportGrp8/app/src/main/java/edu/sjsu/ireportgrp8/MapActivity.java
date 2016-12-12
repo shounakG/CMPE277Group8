@@ -93,6 +93,10 @@ public class MapActivity
             String latLong = report.getLocation();
             String[] latLongStr = latLong.split(",");
 
+            if (latLongStr == null || latLongStr[0].equals("null")) {
+                continue;
+            }
+
             LatLng loc = new LatLng(Double.parseDouble(latLongStr[0]), Double.parseDouble(latLongStr[1]));
             googleMap.addMarker(new MarkerOptions().position(loc).snippet(FORM_VIEW)).setTitle(report.getTitle());
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 14));

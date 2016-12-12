@@ -86,10 +86,6 @@ public class HeatMapActivity extends AppCompatActivity implements OnMapReadyCall
      * Add a simple heat map to the map
      */
     private void addHeatMap() {
-        if (mMap != null) {
-            // Position the camera
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(39.5,-98.35), 3));
-        }
         List<LatLng> list = null;
 
         // Get the data: latitude/longitude positions of police stations.
@@ -103,6 +99,11 @@ public class HeatMapActivity extends AppCompatActivity implements OnMapReadyCall
         HeatmapTileProvider provider = new HeatmapTileProvider.Builder().data(list).build();
         // Add a tile overlay to the map, using the heat map tile provider.
         mMap.addTileOverlay(new TileOverlayOptions().tileProvider(provider));
+
+        if (mMap != null) {
+            // Position the camera
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(((LatLng) list.get(0)).latitude, ((LatLng) list.get(0)).longitude), 14));
+        }
     }
     /**
      * Read the data (locations of police stations) from raw resources.
