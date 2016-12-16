@@ -22,6 +22,9 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,8 +96,25 @@ public class DetailedReportActivity extends AppCompatActivity implements Adapter
 
                 message += "\n\nThank you!\nCMPE 277 Cleaning Department";
 
-                new SendEmailAsyncTask().execute(residentReport.getUser_Email(), subject, message);
-                Toast.makeText(DetailedReportActivity.this, "Status Updated!", Toast.LENGTH_SHORT).show();
+                if (residentReport.getAnnonymous() == "false") {
+                    new SendEmailAsyncTask().execute(residentReport.getUser_Email(), subject, message);
+                    Toast.makeText(DetailedReportActivity.this, "Status Updated!", Toast.LENGTH_SHORT).show();
+
+                    JSONObject notificationJson = new JSONObject();
+                    try {
+                        String finalEmailId = residentReport.getUser_Email().replaceAll("\\W", "");
+                        notificationJson.put("to", CityOfficialActivity.userTokensMap.get(finalEmailId));
+                        // message
+                        JSONObject messageJson = new JSONObject();
+                        messageJson.put("body", "Status of your report " + residentReport.getTitle() + " is changed to" + (String) statusSpinner.getSelectedItem());
+                        messageJson.put("title", "Report Status Changed!");
+                        notificationJson.put("notification", messageJson);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    new HttpPostAsyncTask().execute(notificationJson.toString());
+                }
             }
         });
 

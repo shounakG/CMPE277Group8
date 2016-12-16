@@ -32,8 +32,14 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 1;
@@ -46,14 +52,17 @@ public class MainActivity extends AppCompatActivity {
     private CallbackManager mCallbackManager;
     private ProgressBar progressBar;
     private boolean googleClicked = false;
+    private MyFirebaseInstanceIDService myFirebaseInstanceIDService;
+    private DatabaseReference mDatabase = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_main);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         progressBar = (ProgressBar) findViewById(R.id.progressBar3);
-
+        myFirebaseInstanceIDService = new MyFirebaseInstanceIDService();
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -61,6 +70,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
             if (firebaseAuth.getCurrentUser() != null) {
+                // get Token
+                String token = FirebaseInstanceId.getInstance().getToken();
+
+                if (token != null) {
+                    String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
+                    Map<String, Object> userTokenMap = new HashMap<String, Object>();
+                    email = email.replaceAll("\\W", "");
+                    userTokenMap.put(email, token);
+
+                    mDatabase.child("usertokens").updateChildren(userTokenMap);
+                }
+
                 firebaseAuth.getCurrentUser().getProviderId();
                 List<UserInfo> obj = (List<UserInfo>) firebaseAuth.getCurrentUser().getProviderData();
                 for (UserInfo o : obj) {
@@ -213,7 +235,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
-        // progressBar.setVisibility(View.VISIBLE);
         loginButton.setVisibility(View.GONE);
 
         Log.d(TAG, "handleFacebookAccessToken:" + token);

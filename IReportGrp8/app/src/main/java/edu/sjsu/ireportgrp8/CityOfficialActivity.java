@@ -59,6 +59,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -75,6 +76,7 @@ public class CityOfficialActivity extends AppCompatActivity {
 
     private static final String TAG = "iReport";
     public static CityOfficialActivity me;
+    public static volatile HashMap<String, String> userTokensMap = null;
 
     private SearchView searchView;
 
@@ -101,6 +103,8 @@ public class CityOfficialActivity extends AppCompatActivity {
 
     public static volatile FirebaseStorage storage = FirebaseStorage.getInstance();
     public static volatile StorageReference storageRef = storage.getReferenceFromUrl("gs://ireport-16f3e.appspot.com");
+
+    public static volatile DatabaseReference userTokenRef = FirebaseDatabase.getInstance().getReference().child("usertokens");
 
     private static volatile ArrayList<ResidentReport> residentReports = null;
     private static volatile boolean misEmailFilterEnabled = false;
@@ -314,6 +318,25 @@ public class CityOfficialActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
+
+
+        // send push notification to user
+        userTokenRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+//                for (DataSnapshot dataUser : dataSnapshot.getChildren()) {
+                    Map<String, String> map = (Map<String, String>) dataSnapshot.getValue();
+
+                    for (Map.Entry<String, String> mapEntry : map.entrySet()) {
+                        userTokensMap.put(mapEntry.getKey(), mapEntry.getValue());
+                    }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 
@@ -324,6 +347,8 @@ public class CityOfficialActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city_official);
         mAuth = FirebaseAuth.getInstance();
+
+        userTokensMap = new HashMap<String, String>();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
