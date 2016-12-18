@@ -81,7 +81,7 @@ public class ReportFormActivity extends AppCompatActivity {
     private DatabaseReference mUserReference;
 
     private String screenName;
-    private Boolean anonymous,reportconf;
+    private Boolean anonymous,reportconf=false;
 
     LocationManager mLocationManager;
 
@@ -166,6 +166,9 @@ public class ReportFormActivity extends AppCompatActivity {
         mdescriptionEditText = (EditText) findViewById(R.id.litter_description_a);
         edt_title = (EditText) findViewById(R.id.litter_title);
 
+        mSizeRadioGroup.check(R.id.radio_small);
+        mSeverityRadioGroup.check(R.id.radio_minor);
+
         mAuth = FirebaseAuth.getInstance();
         mUserReference = FirebaseDatabase.getInstance().getReference();
         mUserReference.child(getString(R.string.key_public_user_settings)).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -213,12 +216,26 @@ public class ReportFormActivity extends AppCompatActivity {
                 Date today = new Date();
                 String s = dateFormatter.format(today);
                 r.setDatetime(s);
-                r.setDescription(mdescriptionEditText.getText().toString());
+
+                if(mdescriptionEditText.getText()!=null){
+                    r.setDescription(mdescriptionEditText.getText().toString());
+                }else{
+                    r.setDescription("");
+                }
+
+
+
                 r.setStatus("Still There");
+
                 r.setEmail(mAuth.getCurrentUser().getEmail());
                 r.setAnnonymous(anonymous);
                 r.setScreenname(screenName);
-                r.setTitle(edt_title.getText().toString());
+
+                if(edt_title.getText()==null){
+                    r.setTitle(edt_title.getText().toString());
+                }
+
+
 
                 RadioButton selectedRadioButton = (RadioButton) mSeverityRadioGroup.findViewById(mSeverityRadioGroup.getCheckedRadioButtonId());
                 r.setSeverity(selectedRadioButton.getText().toString());
@@ -226,6 +243,9 @@ public class ReportFormActivity extends AppCompatActivity {
                 selectedRadioButton = (RadioButton) mSizeRadioGroup.findViewById(mSizeRadioGroup.getCheckedRadioButtonId());
                 r.setSize(selectedRadioButton.getText().toString());
                 List<String> imageList = new ArrayList<String>();
+
+
+
 
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageRef = storage.getReferenceFromUrl("gs://ireport-16f3e.appspot.com/");

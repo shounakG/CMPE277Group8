@@ -70,18 +70,22 @@ public class ReportAdapter extends BaseAdapter {
         report_list_datetime.setText(report.getDatetime());
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReferenceFromUrl("gs://ireport-16f3e.appspot.com");
-        StorageReference imageRef = storageRef.child("reports").child(report.getImages().get(0));
-        imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Picasso.with(mContext).load(uri).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-            }
-        });
+        if(report.getImages()!=null){
+            StorageReference imageRef = storageRef.child("reports").child(report.getImages().get(0));
+            imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Picasso.with(mContext).load(uri).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                }
+            });
+        }
+
+
         return convertView;
     }
 

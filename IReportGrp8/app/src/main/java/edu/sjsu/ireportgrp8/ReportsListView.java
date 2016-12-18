@@ -77,7 +77,10 @@ public class ReportsListView extends AppCompatActivity {
             }
 
             report.setEmail(ds.child("email").getValue().toString());
-            report.setScreenname(ds.child("screenname").getValue().toString());
+            if(ds.child("screenname").getValue()!=null){
+                report.setScreenname(ds.child("screenname").getValue().toString());
+            }
+
             for(DataSnapshot image : ds.child("images").getChildren()) {
                 imageList.add(image.getValue().toString());
             }

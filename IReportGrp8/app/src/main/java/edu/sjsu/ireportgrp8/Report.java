@@ -20,7 +20,7 @@ public class Report implements Serializable{
     private String email="";
     private String screenname="";
     private String status="";
-    private Boolean annonymous;
+    private Boolean annonymous=false;
     private List<String> images;
 
     public Report() {
