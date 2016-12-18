@@ -108,24 +108,30 @@ public class ReportFormActivity extends AppCompatActivity {
     };
 
     private Location getLastKnownLocation() {
+        Boolean isGPSEnabled=false;
+        Boolean isNetworkEnabled=false;
+
+
+
         mLocationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+        isGPSEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        //isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        if (!isGPSEnabled)
+        {
+            return null;
+        }
+
+
         List<String> providers = mLocationManager.getProviders(true);
         Location bestLocation = null;
+
         if(providers.size()!=0){
             for (String provider : providers) {
 
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
                     ActivityCompat.requestPermissions(ra,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                     ActivityCompat.requestPermissions(ra,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-                }else{
-
+                    return getLastKnownLocation();
                 }
                 Location l = mLocationManager.getLastKnownLocation(provider);
                 if (l == null) {
@@ -136,23 +142,14 @@ public class ReportFormActivity extends AppCompatActivity {
                     bestLocation = l;
                 }
             }
+            return bestLocation;
         }else{
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
                 ActivityCompat.requestPermissions(ra,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                 ActivityCompat.requestPermissions(ra,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-                return getLastKnownLocation();
-            }else{
-                return null;
+                bestLocation = getLastKnownLocation();
             }
         }
-
         return bestLocation;
     }
 
@@ -293,6 +290,11 @@ public class ReportFormActivity extends AppCompatActivity {
 
                 //LocationManager mLocationManager;
                 Location myLocation = getLastKnownLocation();
+                if ( myLocation == null){
+                    Toast.makeText(ra,"Failed to obtain location, try again. Hint: Check if GPS is Enabled", Toast.LENGTH_LONG).show();
+                    finish();
+                    return;
+                }
 
                 if(myLocation!=null){
                     r.setLatitude(String.valueOf(myLocation.getLatitude()));

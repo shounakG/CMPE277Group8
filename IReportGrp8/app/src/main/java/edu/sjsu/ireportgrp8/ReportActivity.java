@@ -160,10 +160,11 @@ public class ReportActivity extends AppCompatActivity implements IimageElementCl
             //||ReportFormActivity.photoFileList.get(i).equals(null)){
                 ReportFormActivity.photoFileList = new File[3];
                 ReportFormActivity.photoFileList[0]=(photoFile);
-            }else if(ReportFormActivity.photoFileList[i-1]==null){
+            }else if(i<3 && ReportFormActivity.photoFileList[i-1]==null){
                 ReportFormActivity.photoFileList[i-1]=photoFile;
             }else{
                 ReportFormActivity.photoFileList[2]=photoFile;
+                i=3;
             }
 
 
