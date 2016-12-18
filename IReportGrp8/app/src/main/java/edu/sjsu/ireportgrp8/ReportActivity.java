@@ -1,17 +1,23 @@
 package edu.sjsu.ireportgrp8;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -24,9 +30,13 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
-public class ReportActivity extends AppCompatActivity {
+import edu.sjsu.ireportgrp8.Interfaces.IimageElementClicked;
+import edu.sjsu.ireportgrp8.fragments.ImageElementFragment;
+
+public class ReportActivity extends AppCompatActivity implements IimageElementClicked{
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_TAKE_PHOTO = 1;
     ImageView mImageView;
@@ -35,12 +45,19 @@ public class ReportActivity extends AppCompatActivity {
     File photoFile;
     private Button mCameraButton;
     private Button mReportButton;
-
-
+    private FrameLayout  mImageStrip;
+    /*FragmentManager fm;
+    FragmentTransaction ft;*/
+    int i = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
+        i =1;
+        if (ReportFormActivity.photoFileList!=null) {
+            ReportFormActivity.photoFileList = null;
+        }
+
 
         mCameraButton = (Button)findViewById(R.id.pic_button);
         mCameraButton.setOnClickListener(new View.OnClickListener(){
@@ -104,47 +121,80 @@ public class ReportActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReferenceFromUrl("gs://ireport-16f3e.appspot.com/");
-        //StorageReference imageRef = storageRef.child(photoURI.toString());
-        final Uri file = Uri.fromFile(new File(photoFile.toString()));
-        StorageReference Ref = storageRef.child("reports/"+file.getLastPathSegment());
-        UploadTask uploadTask = Ref.putFile(file);
-        // Register observers to listen for when the download is done or if it fails
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                String s = file.getLastPathSegment();
-                ReportFormActivity.currentImage = s;
-                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                Intent i = new Intent(ReportActivity.this, ReportFormActivity.class);
-                startActivity(i);
-            }
-        });
 
-        // Observe state change events such as progress, pause, and resume
-        uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                System.out.println("Upload is " + progress + "% done");
+        //mImageStrip = (FrameLayout)findViewById(R.id.tl_img_strip);
+        TableRow row=new TableRow(this.getApplicationContext());
+        FrameLayout f = new FrameLayout(this);
+        int tempID;
+        tempID=f.generateViewId();
+        //row.addView(f);
+        //mImageStrip.addView(row);
+
+
+        FragmentManager fm;
+        FragmentTransaction ft;
+        fm = getSupportFragmentManager();
+        Fragment fragmentimg = fm.findFragmentById(R.id.Fragment_Container_ImageStrip);
+
+
+
+
+        if (fragmentimg == null) {
+            fragmentimg = new ImageElementFragment();
+            Bundle bundle=new Bundle();
+            bundle.putString("id",Integer.toString(i));
+            bundle.putParcelable("img",photoURI);
+            fragmentimg.setArguments(bundle);
+            int id = i;
+            switch(id){
+                case 1 : id = R.id.image1;
+                        break;
+                case 2 :id = R.id.image12;
+                        break;
+                case 3 :id = R.id.image13;
+                        break;
+                default : id = R.id.image13;
+                            break;
             }
-        }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                System.out.println("Upload is paused");
+            if (ReportFormActivity.photoFileList==null){
+            //||ReportFormActivity.photoFileList.get(i).equals(null)){
+                ReportFormActivity.photoFileList = new File[3];
+                ReportFormActivity.photoFileList[0]=(photoFile);
+            }else if(ReportFormActivity.photoFileList[i-1]==null){
+                ReportFormActivity.photoFileList[i-1]=photoFile;
+            }else{
+                ReportFormActivity.photoFileList[2]=photoFile;
             }
-        });
+
+
+            ft = fm.beginTransaction().replace(id, fragmentimg, Integer.toString(i));
+            i++;
+            ft.commitAllowingStateLoss();
+        }
+
+
+
+
         /*if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             mImageView.setImageBitmap(imageBitmap);
         }*/
+    }
+
+    @Override
+    public void closeButtonClicked(String id) {
+        FragmentManager fm;
+        FragmentTransaction ft;
+        fm = getSupportFragmentManager();
+        Fragment fragmentimg = fm.findFragmentById(R.id.Fragment_Container_ImageStrip);
+        if (fragmentimg == null) {
+            ReportFormActivity.photoFileList[Integer.valueOf(id)-1]=null;
+            //i++;
+            ft = fm.beginTransaction();
+            ft.remove(fm.findFragmentByTag(id));
+            ft.commitAllowingStateLoss();
+            i= Integer.valueOf(id);
+        }
     }
 }

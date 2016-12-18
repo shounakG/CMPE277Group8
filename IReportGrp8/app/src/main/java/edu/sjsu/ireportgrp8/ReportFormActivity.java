@@ -11,6 +11,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,6 +26,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,6 +35,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnPausedListener;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -39,6 +47,7 @@ import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -63,7 +72,8 @@ public class ReportFormActivity extends AppCompatActivity {
     private RadioGroup mSeverityRadioGroup;
     private EditText mdescriptionEditText;
     private EditText edt_title;
-    public static String currentImage = "temp";
+    public static List<String> currentImageList = new ArrayList<String>();
+    public static File[] photoFileList;
     final ReportFormActivity ra = this;
 
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -151,6 +161,7 @@ public class ReportFormActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        currentImageList=new ArrayList<>();
         setContentView(R.layout.activity_report_form);
         mSubmitButton = (Button) findViewById(R.id.report_button);
         mSizeRadioGroup = (RadioGroup) findViewById(R.id.radio_group_size);
@@ -218,8 +229,59 @@ public class ReportFormActivity extends AppCompatActivity {
                 selectedRadioButton = (RadioButton) mSizeRadioGroup.findViewById(mSizeRadioGroup.getCheckedRadioButtonId());
                 r.setSize(selectedRadioButton.getText().toString());
                 List<String> imageList = new ArrayList<String>();
-                imageList.add(currentImage);
-                r.setImages(imageList);
+
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference storageRef = storage.getReferenceFromUrl("gs://ireport-16f3e.appspot.com/");
+                //StorageReference imageRef = storageRef.child(photoURI.toString());
+
+                if(photoFileList!=null){
+                    for (int i = 0; i < photoFileList.length; i++) {
+                        if (photoFileList[i]!=null){
+                            final Uri file = Uri.fromFile(new File(photoFileList[i].toString()));
+                            StorageReference Ref = storageRef.child("reports/"+file.getLastPathSegment());
+                            UploadTask uploadTask = Ref.putFile(file);
+                            String slpg = file.getLastPathSegment();
+                            ReportFormActivity.currentImageList.add(slpg);
+
+                            // Register observers to listen for when the download is done or if it fails
+                            uploadTask.addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle unsuccessful uploads
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+
+                                    //Uri downloadUrl = taskSnapshot.getDownloadUrl();
+
+                                    //Intent i = new Intent(ReportActivity.this, ReportFormActivity.class);
+                                    // startActivity(i);
+                                }
+                            });
+
+                            // Observe state change events such as progress, pause, and resume
+                            uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                    System.out.println("Upload is " + progress + "% done");
+                                }
+                            }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
+                                    System.out.println("Upload is paused");
+                                }
+                            });
+                        }
+                    }
+
+                }else{
+                    ReportFormActivity.currentImageList.add("no-image.jpg");
+                }
+
+
 
 
                 DatabaseReference mDatabase;
@@ -254,13 +316,14 @@ public class ReportFormActivity extends AppCompatActivity {
                     }
                 }
 
-
-
                 UUID reportuuid = UUID.randomUUID();
                 r.setReportId(reportuuid.toString());
+                imageList=currentImageList;
+                r.setImages(imageList);
                 mDatabase.child("userreports").child(mAuth.getCurrentUser().getUid()).child(reportuuid.toString()).setValue(r);
 
-                System.out.println("something");
+
+
                 Toast.makeText(ra,"Information saved...", Toast.LENGTH_SHORT).show();
                 if(reportconf){
                     new SendEmailAsyncTask().execute(mAuth.getCurrentUser().getEmail(),edt_title.getText().toString());

@@ -120,9 +120,21 @@ public class ReportDetailActivity extends AppCompatActivity implements GoogleApi
                         ArrayList<String> imageList = new ArrayList<String>();
                         final String reportid = dataSnapshot.child("reportId").getValue().toString();
                         String title = dataSnapshot.child("title").getValue().toString();
-                        String location = dataSnapshot.child("latitude").getValue() + ", " + dataSnapshot.child("longitude").getValue();
-                        String address = dataSnapshot.child("address").getValue().toString();
-                        String datetime = dataSnapshot.child("datetime").getValue().toString();
+                        String location="";
+                        if(dataSnapshot.child("latitude").getValue()!=null &&dataSnapshot.child("longitude").getValue()!=null){
+                            location = dataSnapshot.child("latitude").getValue() + ", " + dataSnapshot.child("longitude").getValue();
+                        }
+                        String address="";
+                        if(dataSnapshot.child("address").getValue()!=null){
+                            address = dataSnapshot.child("address").getValue().toString();
+                        }
+
+                        String datetime="";
+                        if(dataSnapshot.child("datetime").getValue()!=null){
+                             datetime = dataSnapshot.child("datetime").getValue().toString();
+                        }
+
+
                         String size_severity = dataSnapshot.child("size").getValue() + " & " + dataSnapshot.child("severity").getValue();
                         final String status = dataSnapshot.child("status").getValue().toString();
                         btn_chnage_status.setOnClickListener(new View.OnClickListener() {

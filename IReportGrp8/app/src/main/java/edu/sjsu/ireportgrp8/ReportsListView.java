@@ -59,14 +59,23 @@ public class ReportsListView extends AppCompatActivity {
             List<String> imageList = new ArrayList<String>();
             Report report = new Report();
             report.setReportId(ds.child("reportId").getValue().toString());
-            report.setAddress(ds.child("address").getValue().toString());
+            if(ds.child("address").getValue()!=null){
+                report.setAddress(ds.child("address").getValue().toString());
+            }
+
+
             report.setDescription(ds.child("description").getValue().toString());
             report.setStatus(ds.child("status").getValue().toString());
             report.setSize(ds.child("size").getValue().toString());
             report.setSeverity(ds.child("severity").getValue().toString());
             report.setDatetime(ds.child("datetime").getValue().toString());
-            report.setLongitude(ds.child("longitude").getValue().toString());
-            report.setLatitude(ds.child("latitude").getValue().toString());
+            if(ds.child("longitude").getValue()!=null){
+                report.setLongitude(ds.child("longitude").getValue().toString());
+            }
+            if(ds.child("latitude").getValue()!=null){
+                report.setLatitude(ds.child("latitude").getValue().toString());
+            }
+
             report.setEmail(ds.child("email").getValue().toString());
             report.setScreenname(ds.child("screenname").getValue().toString());
             for(DataSnapshot image : ds.child("images").getChildren()) {

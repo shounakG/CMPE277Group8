@@ -8,18 +8,18 @@ import java.util.List;
  */
 
 public class Report implements Serializable{
-    private String title;
-    private String reportId;
-    private String latitude;
-    private String longitude;
-    private String address;
-    private String description;
-    private String size;
-    private String severity;
-    private String datetime;
-    private String email;
-    private String screenname;
-    private String status;
+    private String title="";
+    private String reportId="";
+    private String latitude="";
+    private String longitude="";
+    private String address="";
+    private String description="";
+    private String size="";
+    private String severity="";
+    private String datetime="";
+    private String email="";
+    private String screenname="";
+    private String status="";
     private Boolean annonymous;
     private List<String> images;
 
