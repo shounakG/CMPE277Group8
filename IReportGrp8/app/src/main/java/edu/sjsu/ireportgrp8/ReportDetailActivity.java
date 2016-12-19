@@ -281,6 +281,7 @@ public class ReportDetailActivity extends AppCompatActivity implements GoogleApi
     private void requestLocationPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)) {
+            btn_chnage_status.setVisibility(View.GONE);
             Toast.makeText(this, "App need needs to access location for navigation", Toast.LENGTH_SHORT).show();
             Snackbar.make(baseLayout, "App need needs to access location for navigation",
                     Snackbar.LENGTH_INDEFINITE)

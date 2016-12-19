@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
 
                     } else if (o.getProviderId().equalsIgnoreCase("google.com")) {
+                        Log.d(TAG, "Start admin1 Activity");
                         Intent intent = new Intent(MainActivity.this, CityOfficialActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
@@ -182,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
                 GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
                 if (result.isSuccess()) {
                     // Google Sign In was successful, authenticate with Firebase
+                    Log.d(TAG, "sign in successful");
                     GoogleSignInAccount account = result.getSignInAccount();
                     firebaseAuthWithGoogle(account);
 
@@ -202,6 +204,8 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     // Google Sign In failed, update UI appropriately
                     // ...
+                    Log.d(TAG, "sign in failed");
+
                 }
             }
         } else {

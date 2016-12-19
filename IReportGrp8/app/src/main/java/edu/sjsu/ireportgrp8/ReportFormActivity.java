@@ -15,9 +15,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -82,7 +84,9 @@ public class ReportFormActivity extends AppCompatActivity {
 
     private String screenName;
     private Boolean anonymous,reportconf=false;
-
+    private final int REQUEST_LOCATION = 0;
+    private final String TAG = getClass().getName();
+    Location myLocation;
     LocationManager mLocationManager;
 
     private final LocationListener mLocationListener = new LocationListener() {
@@ -128,10 +132,10 @@ public class ReportFormActivity extends AppCompatActivity {
         if(providers.size()!=0){
             for (String provider : providers) {
 
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(ra,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                    ActivityCompat.requestPermissions(ra,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-                    return getLastKnownLocation();
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+                    ActivityCompat.requestPermissions(ra,new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION);
+                    //ActivityCompat.requestPermissions(ra,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION);
+                    //return getLastKnownLocation();
                 }
                 Location l = mLocationManager.getLastKnownLocation(provider);
                 if (l == null) {
@@ -145,12 +149,36 @@ public class ReportFormActivity extends AppCompatActivity {
             return bestLocation;
         }else{
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(ra,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                ActivityCompat.requestPermissions(ra,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-                bestLocation = getLastKnownLocation();
+                ActivityCompat.requestPermissions(ra,new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION);
+                //ActivityCompat.requestPermissions(ra,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION);
+                //bestLocation = getLastKnownLocation();
             }
         }
         return bestLocation;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_LOCATION) {
+            Log.i(TAG, "Received response for contact permissions request.");
+
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                /*Snackbar.make(baseLayout, "Permissions Granted",Snackbar.LENGTH_SHORT).show();
+                if (mGoogleApiClient.isConnected()) {
+                    mGoogleApiClient.disconnect();
+                }
+                mGoogleApiClient.connect();*/
+                Log.i(TAG, "Location permissions were GRANTED.");
+                myLocation = getLastKnownLocation();
+            } else {
+                Log.i(TAG, "Location permissions were NOT granted.");
+                /*Snackbar.make(baseLayout, "Permissions not Granted",
+                        Snackbar.LENGTH_SHORT)
+                        .show();*/
+            }
+        }
     }
 
 
@@ -170,6 +198,8 @@ public class ReportFormActivity extends AppCompatActivity {
         mSeverityRadioGroup.check(R.id.radio_minor);
 
         mAuth = FirebaseAuth.getInstance();
+
+        myLocation = getLastKnownLocation();
         mUserReference = FirebaseDatabase.getInstance().getReference();
         mUserReference.child(getString(R.string.key_public_user_settings)).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -231,7 +261,7 @@ public class ReportFormActivity extends AppCompatActivity {
                 r.setAnnonymous(anonymous);
                 r.setScreenname(screenName);
 
-                if(edt_title.getText()==null){
+                if(edt_title.getText()!=null){
                     r.setTitle(edt_title.getText().toString());
                 }
 
@@ -309,7 +339,7 @@ public class ReportFormActivity extends AppCompatActivity {
                 //databaseReference.child("userreports").child(user.getUid()).child(randomReportId.toString()).setValue(report);
 
                 //LocationManager mLocationManager;
-                Location myLocation = getLastKnownLocation();
+
                 if ( myLocation == null){
                     Toast.makeText(ra,"Failed to obtain location, try again. Hint: Check if GPS is Enabled", Toast.LENGTH_LONG).show();
                     finish();
@@ -365,7 +395,7 @@ public class ReportFormActivity extends AppCompatActivity {
             }};
 
 
-        }
+    }
     @Override
     protected void onStart() {
         super.onStart();

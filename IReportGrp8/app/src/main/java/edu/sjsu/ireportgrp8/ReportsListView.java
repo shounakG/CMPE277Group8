@@ -122,14 +122,7 @@ public class ReportsListView extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         // Inflate menu to add items to action bar if it is present.
-        inflater.inflate(R.menu.main_menu, menu);
-        // Associate searchable configuration with the SearchView
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView =
-                (SearchView) menu.findItem(R.id.menu_search).getActionView();
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
+        inflater.inflate(R.menu.user_reports_menu, menu);
 
         return super.onCreateOptionsMenu(menu);
     }
