@@ -680,7 +680,7 @@ public class CityOfficialActivity extends AppCompatActivity {
         }
     }
 
-    protected void dealyedNotify() {
+    protected void delayedRefresh() {
         final View view = (ViewGroup) ((ViewGroup) CityOfficialActivity.this
                 .findViewById(android.R.id.content)).getChildAt(0);
         view.postDelayed(new Runnable() {
