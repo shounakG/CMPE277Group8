@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "801168312668-qg9fb1s4iq4ka9s02omktpkqspg3n77i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.sjsu.ireportgrp8",
+            "certificate_hash": "6AB81DD84A5FA029FE1E5D449D51947694E4B62E"
+          }
+        },
+        {
           "client_id": "801168312668-m6863qeshv4s62568epaoo9ifti1j54m.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

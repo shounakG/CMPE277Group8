@@ -110,6 +110,7 @@ public class CityOfficialActivity extends AppCompatActivity {
     private static volatile boolean misEmailFilterEnabled = false;
     private static volatile String mreportStatusFilter = null;
     private static volatile String mseverityFilter = null;
+    private static volatile List<ResidentReport> mSnapshotsBackup = null;
 
     public static class ReportsViewHolder extends RecyclerView.ViewHolder {
         public TextView reportTitleView;
@@ -192,8 +193,7 @@ public class CityOfficialActivity extends AppCompatActivity {
         public Class<T> mModelClass;
         public int mModelLayout;
         public Class<VH> mViewHolderClass;
-        public List<T> mSnapshots;
-        public List<T> mSnapshotsBackup;
+        public volatile List<T> mSnapshots;
         public volatile int updateCounter = 0;
         private int positionStart = 0;
 
@@ -202,6 +202,7 @@ public class CityOfficialActivity extends AppCompatActivity {
             mModelLayout = modelLayout;
             mViewHolderClass = viewHolderClass;
             mSnapshots = new ArrayList<T>();
+            mSnapshotsBackup = new ArrayList<ResidentReport>();
 
             CityOfficialActivity.firebaseRetreiveData();
             setTimer(0);
@@ -242,7 +243,7 @@ public class CityOfficialActivity extends AppCompatActivity {
             mSnapshots.add(data);
 
             residentReports.add((ResidentReport) data);
-            mFirebaseAdapter.mSnapshotsBackup = mFirebaseAdapter.mSnapshots;
+            mSnapshotsBackup.add((ResidentReport) data);
             updateCounter++;
         }
 
@@ -434,7 +435,7 @@ public class CityOfficialActivity extends AppCompatActivity {
                 misEmailFilterEnabled = false;
                 mseverityFilter = mreportStatusFilter = null;
 
-                updateReports();
+                repopulateReports();
             }
             return true;
             case R.id.filter_menu:
@@ -510,7 +511,21 @@ public class CityOfficialActivity extends AppCompatActivity {
                         // Dismiss the popup window
                         popupWindow.dismiss();
 
-                        updateReports();
+                        clearRecyclerView();
+
+                        final View view = (ViewGroup) ((ViewGroup) CityOfficialActivity.this
+                                .findViewById(android.R.id.content)).getChildAt(0);
+                        view.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        updateReports();
+                                    }
+                                });
+                            }
+                        }, 2);
                     }
                 });
 
@@ -573,10 +588,12 @@ public class CityOfficialActivity extends AppCompatActivity {
         }
     }
 
-    public void updateReports() {
-        // set the original copy
-        mFirebaseAdapter.mSnapshots = mFirebaseAdapter.mSnapshotsBackup;
+    // remove all views
+    protected void clearRecyclerView() {
+        mlistRecyclerView.removeAllViews();
+    }
 
+    public void updateReports() {
         List<ResidentReport> searchResults = new ArrayList<ResidentReport>();
 
         String searchQuery = searchView.getQuery().toString();
@@ -587,13 +604,13 @@ public class CityOfficialActivity extends AppCompatActivity {
             imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 
             searchQuery = searchQuery.toUpperCase();
-            for (ResidentReport report : mFirebaseAdapter.mSnapshots) {
+            for (ResidentReport report : mSnapshotsBackup) {
                 if (report.getTitle().toUpperCase().contains(searchQuery) || report.getStatus().toUpperCase().contains(searchQuery) || report.getSeverity_Level().toUpperCase().contains(searchQuery) || report.getUser_Email().toUpperCase().contains(searchQuery)) {
                     searchResults.add(report);
                 }
             }
         } else {
-            searchResults.addAll(mFirebaseAdapter.mSnapshots);
+            searchResults.addAll(mSnapshotsBackup);
         }
 
         if (misEmailFilterEnabled) {
@@ -636,10 +653,13 @@ public class CityOfficialActivity extends AppCompatActivity {
             }
         }
 
-        mFirebaseAdapter.mSnapshotsBackup = mFirebaseAdapter.mSnapshots;
         mFirebaseAdapter.mSnapshots = searchResults;
 
-        mlistRecyclerView.removeAllViews();
+        mlistRecyclerView = (RecyclerView) findViewById(R.id.listRecyclerView);
+
+        mLinearLayoutManager = new WrapContentLinearLayoutManager(CityOfficialActivity.this, LinearLayoutManager.VERTICAL, false);
+        mlistRecyclerView.setLayoutManager(mLinearLayoutManager);
+
         mlistRecyclerView.setAdapter(mFirebaseAdapter);
     }
 
@@ -658,6 +678,22 @@ public class CityOfficialActivity extends AppCompatActivity {
                 Log.e("probe", "meet a IOOBE in RecyclerView");
             }
         }
+    }
+
+    protected void dealyedNotify() {
+        final View view = (ViewGroup) ((ViewGroup) CityOfficialActivity.this
+                .findViewById(android.R.id.content)).getChildAt(0);
+        view.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        repopulateReports();
+                    }
+                });
+            }
+        }, 2);
     }
 
     private void repopulateReports() {
@@ -704,7 +740,7 @@ public class CityOfficialActivity extends AppCompatActivity {
                 viewHolderFinal.addressTextView.setText(residentReportFinal.getAddress());
                 viewHolderFinal.datePostedTextView.setText(residentReportFinal.getFullDate());
                 viewHolderFinal.currentStatusTextView.setText(residentReportFinal.getStatus());
-                if (residentReportFinal.getAnnonymous().equals("false"))
+                if (residentReportFinal.getAnnonymous() == null || residentReportFinal.getAnnonymous().equals("false"))
                 {
                     viewHolderFinal.emailTextView.setText(residentReportFinal.getUser_Email());
                 } else {

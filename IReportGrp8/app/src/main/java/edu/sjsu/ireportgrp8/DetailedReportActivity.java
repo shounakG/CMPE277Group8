@@ -96,7 +96,7 @@ public class DetailedReportActivity extends AppCompatActivity implements Adapter
 
                 message += "\n\nThank you!\nCMPE 277 Cleaning Department";
 
-                if (residentReport.getAnnonymous() == "false") {
+                if (residentReport.getAnnonymous().equals("false")) {
                     new SendEmailAsyncTask().execute(residentReport.getUser_Email(), subject, message);
                     Toast.makeText(DetailedReportActivity.this, "Status Updated!", Toast.LENGTH_SHORT).show();
 
@@ -191,5 +191,12 @@ public class DetailedReportActivity extends AppCompatActivity implements Adapter
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        CityOfficialActivity.me.delayedRefresh();
     }
 }

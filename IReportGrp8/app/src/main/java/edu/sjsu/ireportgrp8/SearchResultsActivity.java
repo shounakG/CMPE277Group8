@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 public class SearchResultsActivity extends AppCompatActivity {
 
@@ -39,8 +41,22 @@ public class SearchResultsActivity extends AppCompatActivity {
 
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            CityOfficialActivity.me.updateReports();
-            finish();
+            CityOfficialActivity.me.clearRecyclerView();
+
+            final View view = (ViewGroup) ((ViewGroup) SearchResultsActivity.this
+                    .findViewById(android.R.id.content)).getChildAt(0);
+            view.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            CityOfficialActivity.me.updateReports();
+                            finish();
+                        }
+                    });
+                }
+            }, 2);
         }
     }
 }
